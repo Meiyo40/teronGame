@@ -8,17 +8,29 @@ class Ghost {
         this.status = null;
 
         this.image = new Image();
-        this.image.src = "img/ghost.png";
-        this.image.width = 30;
-        this.image.height = 30;
+        this.image.src = "img/ghost_banane.png";
+        this.image.width = 40;
+        this.image.height = 40;
     }
 
     select(value) {
         if (value) {
-            this.image.src = "img/selected_ghost.png";
+            this.image.src = "img/selected_banane.png";
         } else {
-            this.image.src = "img/ghost.png";
+            this.image.src = "img/ghost_banane.png";
         }
         this.selected = value;
+    }
+}
+
+class Teron {
+    constructor(pX, pY) {
+        this.image = new Image();
+        this.image.src = "img/teron.png";
+        this.image.width = 50;
+        this.image.height = 50;
+
+        this.x = pX;
+        this.y = pY;
     }
 }
