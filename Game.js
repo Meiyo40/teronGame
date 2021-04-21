@@ -48,6 +48,8 @@ class TeronGame {
                 this.player.shot("volley");
             } else if (e.code === "Digit5") {
                 this.player.shot("shield");
+            } else if (e.key == "r") {
+                this.player.selectTarget(this.ghosts);
             }
             this.player.input(e)
         }, false);

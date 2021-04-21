@@ -196,6 +196,32 @@ class Player {
 
     }
 
+    selectTarget(ghosts) {
+        if (this.target == null) {
+            let min = 1000;
+            let index = null;
+            ghosts.forEach((g) => {
+                let dist = Tools.distance(g.x, g.y, this.x, this.y);
+                if (dist < min) {
+                    min = dist;
+                    index = ghosts.indexOf(g);
+                }
+                g.select(false);
+            })
+            this.target = ghosts[index];
+            this.target.select(true);
+        } else {
+            this.target.select(false);
+            let index = ghosts.indexOf(this.target);
+            if (index < ghosts.length - 1) {
+                this.target = ghosts[index + 1];
+            } else {
+                this.target = ghosts[0];
+            }
+            this.target.select(true);
+        }
+    }
+
     input(key) {
         if (key.key === "d") {
             this.keys.keyRight = true;
@@ -226,11 +252,3 @@ class Player {
         }
     }
 }
-
-/*
-    Spirit Strike - key '1' - A melee attack which does 638 to 862 frost damage and reduces damage dealt by the target by 10% for 5 seconds. Ability can only be used on Teron Gorefiend.
-    Spirit Lance - key '3' - A ranged attack which does 6,175 to 6,825 damage and applies a debuff on the target which reduces its movement speed by 30% for 9 seconds. The debuff stacks up to the three times. Ability has a 30 yard range and can only be used on Shadowy Constructs.
-    Spirit Chains - key '4' - A short-range AoE shackle which does 1,900 to 2,100 frost damage to targets within 12 yards. Targets are held in place for 5 seconds. Ability has a 15 second cooldown and only affects Shadowy Constructs.
-    Spirit Volley - key '5' - A short range AoE which does 9,900 to 12,100 frost damage. Ability has a 15 second cooldown and only affects Shadowy Constructs.
-    Spirit Shield - key '7' - Applies a 30 second buff on a friendly target which absorbs 11,400 to 12,600 shadow damage. Ability has a 1.5 minute cooldown. Because Ghosts last for 60 seconds, this ability can only be used once per Ghost.
-*/
