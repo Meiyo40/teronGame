@@ -10,6 +10,7 @@ class Player {
         this.image.height = 30;
 
         this.world = null;
+        this.target = null;
 
 
         this.keys = { keyRight: false, keyLeft: false, keyDown: false, keyUp: false };
@@ -83,7 +84,8 @@ class Player {
             image: new Image()
         }
 
-        this.debuff.remaining = 20;
+        this.debuff.spawned = false;
+        this.debuff.remaining = 2;
         this.debuff.image.src = "img/spells/player_debuff.jpg";
         this.debuff.image.width = 30;
         this.debuff.image.height = 30;
@@ -129,7 +131,6 @@ class Player {
     }
 
     input(key) {
-        console.log(key)
         if (key.key === "d") {
             this.keys.keyRight = true;
         }

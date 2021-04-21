@@ -12,14 +12,32 @@
 
 <body>
     <div id="gameContainer">
-        <canvas id="game-canvas" width="200" height="300"></canvas>
-        <div id="player_commands"></div>
+        <canvas id="game-canvas" width="300" height="450"></canvas>
+        <div id="player_commands">
+        </div>
+    </div>
+    <div>
+        <h4>Protips:</h4>
+        <ul>
+            <li><strong>Spirit Strike - key '1' -</strong> A melee attack which does 638 to 862 frost damage and reduces damage dealt by the target by 10% for 5 seconds. Ability can only be used on Teron Gorefiend.</li>
+            <li><strong>Spirit Lance - key '3' -</strong> A ranged attack which does 6,175 to 6,825 damage and applies a debuff on the target which reduces its movement speed by 30% for 9 seconds. The debuff stacks up to the three times. Ability has a 30
+                yard range and can only be used on Shadowy Constructs.</li>
+            <li><strong>Spirit Chains - key '4' -</strong> A short-range AoE shackle which does 1,900 to 2,100 frost damage to targets within 12 yards. Targets are held in place for 5 seconds. Ability has a 15 second cooldown and only affects Shadowy Constructs.
+            </li>
+            <li>
+                <strong>Spirit Volley - key '5' -</strong> A short range AoE which does 9,900 to 12,100 frost damage. Ability has a 15 second cooldown and only affects Shadowy Constructs.
+            </li>
+            <li>
+                <strong>Spirit Shield - key '7' -</strong> Applies a 30 second buff on a friendly target which absorbs 11,400 to 12,600 shadow damage. Ability has a 1.5 minute cooldown. Because Ghosts last for 60 seconds, this ability can only be used
+                once per Ghost.
+            </li>
+        </ul>
     </div>
 
     <script src="utils.js"></script>
     <script src="ghost.js"></script>
     <script src="player.js"></script>
-    <script src="teron.js"></script>
+    <script src="Game.js"></script>
 </body>
 
 </html>
