@@ -1,0 +1,14 @@
+body,
+html {
+    background-color: grey;
+}
+
+#gameContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-canvas {
+    background-color: black;
+}
