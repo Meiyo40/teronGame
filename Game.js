@@ -30,10 +30,24 @@ class TeronGame {
         this.ghosts = new Array();
 
         this.teron = new Teron(this.canvas.width / 2, 22);
+        this.ui = { spells: new Array() };
+
+        this.ui.spells = this.initSpellsUi();
 
         window.addEventListener("keydown", (e) => {
             if (e.key == "Enter") {
                 location.reload();
+            }
+            if (e.code === "Digit1") {
+                this.player.shot("strike");
+            } else if (e.code === "Digit2") {
+                this.player.shot("lance");
+            } else if (e.code === "Digit3") {
+                this.player.shot("chains");
+            } else if (e.code === "Digit4") {
+                this.player.shot("volley");
+            } else if (e.code === "Digit5") {
+                this.player.shot("shield");
             }
             this.player.input(e)
         }, false);
@@ -60,11 +74,13 @@ class TeronGame {
 
         if (this.ghosts.length > 0) {
             this.ghosts.forEach((g) => {
-                g.friends = this.ghosts;
-                g.update(this.dt);
-                if (g.collide(this.teron.x, this.teron.y)) {
-                    g.status.alive = false;
-                    this.teron.ghostHit++;
+                if (g.status.alive) {
+                    g.friends = this.ghosts;
+                    g.update(this.dt);
+                    if (g.collide(this.teron.x, this.teron.y)) {
+                        g.status.alive = false;
+                        this.teron.ghostHit++;
+                    }
                 }
             });
         }
@@ -84,7 +100,7 @@ class TeronGame {
         //player
         if (this.player.debuff.remaining > 0) {
             ctx.drawImage(this.player.debuff.image, this.player.debuff.x, this.player.debuff.y, this.player.debuff.image.width, this.player.debuff.image.height);
-            ctx.font = "20px serif";
+            ctx.font = "20px Arial";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             let text = this.player.debuff.remaining + "s";
@@ -113,10 +129,25 @@ class TeronGame {
                 }
             })
         }
+
+        //ui
+        this.ui.spells.forEach((btn) => {
+            ctx.drawImage(btn.image, btn.x, btn.y, btn.image.width, btn.image.height);
+            if (btn.data.current_cooldown > 0) {
+                ctx.font = "bold 20px Arial";
+                ctx.shadowColor = "white";
+                ctx.shadowBlur = 7;
+                ctx.lineWidth = 5;
+                ctx.strokeText(btn.data.current_cooldown, btn.x + 15, btn.y + 25);
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "black";
+                ctx.fillText(btn.data.current_cooldown, btn.x + 15, btn.y + 25);
+            }
+        })
     }
 
     gameOver() {
-        this.ctx.font = "40px serif";
+        this.ctx.font = "40px Arial";
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = "center";
         this.ctx.fillText("Ouk ouk!", this.canvas.width / 2, this.canvas.height / 2);
@@ -124,7 +155,7 @@ class TeronGame {
     }
 
     win() {
-        this.ctx.font = "40px serif";
+        this.ctx.font = "40px Arial";
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = "center";
         this.ctx.fillText("HAOU HAOU!", this.canvas.width / 2, this.canvas.height / 2);
@@ -141,8 +172,9 @@ class TeronGame {
                     (mX > x) &&
                     (mY < e.y + e.image.height) &&
                     (mY > e.y)) {
-                    if (hasTouch.state) {
-                        hasTouch.target.selected = false;
+                    if (hasTouch.state && hasTouch.target != null) {
+                        hasTouch.target.select(false);
+                        hasTouch.target = null;
                     } else {
                         this.player.target = e;
                         hasTouch.state = true;
@@ -153,7 +185,29 @@ class TeronGame {
                     e.select(false);
                 }
             });
+            this.player.target = hasTouch.target;
         }
+    }
+
+    initSpellsUi() {
+
+        let spells = new Array();
+        let BaseX = 70;
+        this.player.spells.forEach((spell) => {
+            let img = new Image();
+            img.src = spell.image;
+            img.width = 30;
+            img.height = 30;
+            spells.push({ x: BaseX, y: this.canvas.height - 30, image: img, data: spell });
+            BaseX = BaseX + img.width + 5;
+            if (spell.current_cooldown > 0) {
+                setInterval(() => {
+                    spell.current_cooldown--;
+                }, 1000)
+            }
+        })
+
+        return spells;
     }
 }
 
