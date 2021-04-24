@@ -43,7 +43,7 @@ class TeronGame {
             } else if (e.code === "Digit2") {
                 this.player.shot("lance");
             } else if (e.code === "Digit3") {
-                this.player.shot("chains");
+                this.player.shot("chains", this.ghosts);
             } else if (e.code === "Digit4") {
                 this.player.shot("volley");
             } else if (e.code === "Digit5") {
@@ -65,7 +65,8 @@ class TeronGame {
     }
 
     update() {
-        this.player.move()
+        this.player.move();
+        this.player.update();
         if (this.player.debuff.remaining <= 0 && this.player.debuff.spawned == false) {
             this.player.debuff.spawned = true;
             this.ghosts.push(new Ghost(1, { x: this.player.x - 30, y: this.player.y - 30 }, this.canvas));
@@ -123,12 +124,27 @@ class TeronGame {
 
                     ctx.beginPath();
                     ctx.lineWidth = 7;
-                    ctx.fillStyle = 'green';
+
+                    if (e.status.debuff.stun.active) {
+                        ctx.fillStyle = 'cyan';
+                    } else if (e.status.debuff.snare.active) {
+                        ctx.fillStyle = 'blue';
+                    } else {
+                        ctx.fillStyle = 'green';
+                    }
+
                     ctx.rect(e.x - 16, e.y - 24, 30 * e.getPercentHealth() + 2, 8);
                     ctx.fill();
 
                     ctx.drawImage(e.image, e.x - (e.image.width / 2), e.y - (e.image.height / 2), e.image.width, e.image.height);
                 }
+            })
+        }
+
+        //spells
+        if (this.player.shots.length > 0) {
+            this.player.shots.forEach((e) => {
+                e.draw(ctx);
             })
         }
 

@@ -1,19 +1,3 @@
-class Shots {
-    constructor(x, y, vx, vy, image) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.image = setImage(image);
-    }
-
-    setImage(imageName) {
-        let img = new Image();
-        //TODO
-        return img;
-    }
-}
-
 class Player {
     constructor(pName) {
         this.name = pName;
@@ -57,7 +41,7 @@ class Player {
                 duration: 9
             },
             targets: { teron: false, ghosts: true },
-            cooldown: 0,
+            cooldown: 1.5,
             current_cooldown: 0,
             image: "img/spells/lance.jpg",
             timer: null
@@ -158,8 +142,8 @@ class Player {
         }
     }
 
-    shot(spell) {
-        if (this.target != null) {
+    shot(spell, ennemies = null) {
+        if (this.target != null || spell === "chains") {
             let index = null;
             this.spells.forEach((s) => {
                 if (s.name == spell) {
@@ -167,7 +151,7 @@ class Player {
                 }
             })
             if (this.spells[index].current_cooldown <= 0) {
-                this.doSpellEffect(this.spells[index], this.target);
+                this.doSpellEffect(this.spells[index], this.target, ennemies);
                 if (this.spells[index].cooldown > 0) {
                     this.spells[index].current_cooldown = this.spells[index].cooldown;
                     this.spells[index].timer = setInterval(() => {
@@ -185,15 +169,45 @@ class Player {
         }
     }
 
-    doSpellEffect(spell, target) {
+    doSpellEffect(spell, target, ennemies) {
         console.log("Cast: " + spell.name);
-        if (spell.damage.min > 0 && spell.targets.ghosts &&
-            (Tools.distance(this.x, this.y, target.x, target.y) < spell.range * 4)) {
-            let damage = Math.floor(Math.random() * spell.damage.max) + spell.damage.min;
-            console.log("HIT: " + damage);
-            target.getHit(damage);
+        if (spell.name == "chains") {
+            if (ennemies != null) {
+                let chains = new Shot(this.x, this.y, null, ennemies, null, spell, this);
+                this.shots.push(chains);
+            }
+        } else {
+            if (spell.damage.min > 0 && spell.targets.ghosts &&
+                (Tools.distance(this.x, this.y, target.x, target.y) < spell.range * 4)) {
+                let damage = Math.floor(Math.random() * spell.damage.max) + spell.damage.min;
+                console.log("HIT: " + damage + " EFFECT: " + spell.effect.name);
+                let cast = new Shot(this.x, this.y, "/img/spells/bolt_poop.png", target, damage, spell, this);
+                this.shots.push(cast);
+                console.log(this.shots.length)
+                    //target.applyStatus(spell);
+                    //target.getHit(damage);
+            }
         }
 
+    }
+
+    update() {
+        this.shotsUpdate();
+    }
+
+    shotsUpdate() {
+        let toDelList = new Array();
+        this.shots.forEach((e) => {
+            e.update();
+            if (e.toDelete) {
+                toDelList.push(this.shots.indexOf(e));
+            }
+        });
+        if (toDelList.length > 0) {
+            for (let i = 0; i < toDelList.length; i++) {
+                this.shots.splice(toDelList[i], 1);
+            }
+        }
     }
 
     selectTarget(ghosts) {
